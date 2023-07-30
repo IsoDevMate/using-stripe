@@ -17,12 +17,12 @@ app.use(cors())
 // Routes here 
 app.post("/checkout-session", async(req,res)=>{
    
-    const { product } = req.body
-    
-    console.log(product)
-    let items= req.body.items
+  const { product, items } = req.body; // Destructure product and items from req.body
+  console.log("Product:", product);
+  console.log("Items:", items);
+    //let items= req.body.items
     let lineItems =[]
-      items.forEach((item)=>lineItems.push(
+      items.ForEach((item)=>lineItems.push(
 
         {
           price:item.id,
