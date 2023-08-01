@@ -1,81 +1,52 @@
-const express = require('express')
-const app = express()
+const express = require('express');
+const app = express();
+const bodyParser = require('body-parser');
+const cors = require('cors');
+require('dotenv').config();
+const port = process.env.PORT || 5005;
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
-const cors = require("cors"); 
+// Middleware
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(cors());
 
-require("dotenv").config()
-const port = process.env.PORT || 5005
+const YOUR_DOMAIN = process.env.YOUR_DOMAIN || 'https://d232-102-222-221-118.ngrok-free.app';
 
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
+// Routes here
+app.get('/', (req, res, next) => {
+  res.render('index page', { title: 'welcome to home Page' });
+  next();
+});
 
-//middeware 
-app.use(express.json())
-app.use(cors())
+app.post('/checkout-session', async (req, res) => {
+  const { product } = req.body;
 
-
-
-// Routes here 
-app.post("/checkout-session", async(req,res)=>{
-   
-  const { product, items } = req.body; // Destructure product and items from req.body
-  console.log("Product:", product);
-  console.log("Items:", items);
-    //let items= req.body.items
-    let lineItems =[]
-      items.ForEach((item)=>lineItems.push(
-
-        {
-          price:item.id,
-          quantity:item.quantity,
-          name:item.name,
-          desc:item.description
-        }
-      ))
-
-
+  if (!product || !Array.isArray(product)) {
+    return res.status(400).json({ message: 'Invalid product data' });
+  }
+  try {
+    const lineItems = product.map((product) => ({
+      price: product.id,
+      quantity: product.quantity,
     
+    }));
+
     const session = await stripe.checkout.sessions.create({
-        payment_method_types: ["card"], 
-        //an array of req.body.items from the frontend
-        //we create  another array called line_items and store items from the frontend
-          /*
-    req.body.items
-    [
-        {
-            id: 1,
-            quantity: 3
-        }
-    ]
+      
+      payment_method_types: ['card'],
+      line_items: lineItems[0],
+      mode: 'payment',
+     /*  payment_status: 'unpaid', */
+      success_url: `${YOUR_DOMAIN}?success=true`,
+      cancel_url: `${YOUR_DOMAIN}?cancel=true`,
+    });
 
-    stripe wants
-    [
-        {
-            price: 1,
-            quantity: 3
-        }
-    ]
-    */
-      /*   line_items: [ 
-            { 
-              price_data: { 
-                currency: "usd", 
-                product_data: { 
-                  name: product.name, 
-                }, 
-                unit_amount: product.price * 100, 
-              }, 
-              quantity: product.quantity, 
-            }, 
-          ],  */
-        line_items:lineItems,
-          mode: "payment", 
-          payment_status:'unpaid',
-          success_url: "http://localhost:3000/success", 
-          cancel_url: "http://localhost:3000/cancel", 
-        }); 
-        res.json({ id: session.id }); 
-      }); 
+    res.status(200).json({ id: session.id });
+  } catch (error) {
+    console.error('Error during payment:', error);
+    res.status(500).json({ message: 'Error during payment' });
+  }
+});
 
-app.listen(port, ()=>
-console.log(`server is running on port ${port}`)
-)
+app.listen(port, () => console.log(`server is running on port ${port}`));
