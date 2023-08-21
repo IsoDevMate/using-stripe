@@ -1,4 +1,7 @@
 # using-stripe
+
+<img src="./ecom-ui/src/images/Screenshot%20(282).png"/>
+
 ## Summary
 The code snippet is a functional component in React that handles the payment process using Stripe. It allows the user to add a product to the cart, update the quantity, and proceed to checkout.
 
@@ -28,8 +31,10 @@ ___
 ### Outputs
 The code snippet renders a card component with the product details and buttons for adding to the cart and updating the quantity. When the user clicks the "ADD TO CART" button, the payment process is initiated using Stripe. The user is redirected to the Stripe checkout page where they can complete the payment.
 ___
+## BACKEND CODE 
+![Postman Image](./ecom-ui/src/images/Screenshot%20(283).png)
 
-## Backend Code Explanation 
+
 ## Summary
 The code snippet is a callback function for the '/checkout-session' route in an Express.js application. It creates a checkout session using the Stripe API based on the provided product data and returns the session ID as a response.
 
@@ -51,7 +56,7 @@ const resBody = {
 
 ## Code Analysis
 ### Inputs
-- `req.body`: The request body containing the product data.
+- The request object (`req`) containing the product data in the request body.
 ___
 ### Flow
 1. The code extracts the `product` array from the request body.
@@ -63,8 +68,9 @@ ___
 7. If there is an error during the payment or session creation, it sends a 500 response with an error message.
 ___
 ### Outputs
-- `res.status(400).json({ message: 'Invalid product data' })`: If the product data is invalid.
-- `res.status(200).json({ id: session.id })`: If the session creation is successful.
-- `res.status(500).json({ message: 'Error during payment' })`: If there is an error during the payment or session creation.
+- The response object (`res`) with a session ID in the body if the session creation is successful.
+- A 400 response with an error message if the product data is invalid.
+- A 500 response with an error message if there is an error during the payment or session creation.
 ___
+
 
