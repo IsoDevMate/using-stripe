@@ -30,43 +30,41 @@ The code snippet renders a card component with the product details and buttons f
 ___
 
 ## Backend Code Explanation 
-
 ## Summary
-The code snippet is a functional component in React that handles the payment process using Stripe. It allows the user to add a product to the cart, increase or decrease the quantity, and proceed to checkout. The component uses useState to manage the state of the product and isProcessing. It also utilizes the loadStripe function from the '@stripe/stripe-js' library to load the Stripe API and handle the payment process. The component makes an HTTP POST request to a backend API to create a checkout session and redirects the user to the Stripe checkout page.
+The code snippet is a callback function for the '/checkout-session' route in an Express.js application. It creates a checkout session using the Stripe API based on the provided product data and returns the session ID as a response.
 
 ## Example Usage
 ```javascript
-import React from 'react';
-import { StripePayment } from './StripePayment';
-
-const App = () => {
-  return (
-    <div>
-      <h1>My Online Store</h1>
-      <StripePayment />
-    </div>
-  );
+// Request body
+const reqBody = {
+  product: [
+    { id: 'product_1', quantity: 2 },
+    { id: 'product_2', quantity: 1 }
+  ]
 };
 
-export default App;
+// Response
+const resBody = {
+  id: 'session_12345'
+};
 ```
 
 ## Code Analysis
 ### Inputs
-- None
+- `req.body`: The request body containing the product data.
 ___
 ### Flow
-1. The component initializes the state variables `product` and `isProcessing` using the useState hook. The `product` variable is an array containing an object with properties like `name`, `id`, `price`, and `quantity`.
-2. The `handlePayment` function is an asynchronous function that is called when the user clicks the "ADD TO CART" button. It sets the `isProcessing` state variable to true.
-3. The `loadStripe` function is called to load the Stripe API using the provided public key.
-4. The `body` variable is created to hold the product details, which is then sent as JSON in the HTTP POST request to the backend API.
-5. The HTTP POST request is made using the `axios` library, and the response is stored in the `response` variable.
-6. The `session` variable is assigned the `id` property from the response data.
-7. The `stripe.redirectToCheckout` function is called with the `sessionId` to redirect the user to the Stripe checkout page.
-8. If there is an error during the redirect, the error is logged to the console and the `isProcessing` state variable is set to false.
-9. If there is an error during the HTTP POST request, the error is logged to the console, an alert is shown to the user, and the `isProcessing` state variable is set to false.
+1. The code extracts the `product` array from the request body.
+2. It validates the product data using the `productSchema` defined using the Joi library.
+3. If the product data is invalid, it sends a 400 response with an error message.
+4. If the product data is valid, it creates an array of line items using the `product` array.
+5. It then creates a checkout session using the Stripe API, specifying the payment method types, line items, success URL, and cancel URL.
+6. If the session creation is successful, it sends a 200 response with the session ID.
+7. If there is an error during the payment or session creation, it sends a 500 response with an error message.
 ___
 ### Outputs
-- None
+- `res.status(400).json({ message: 'Invalid product data' })`: If the product data is invalid.
+- `res.status(200).json({ id: session.id })`: If the session creation is successful.
+- `res.status(500).json({ message: 'Error during payment' })`: If there is an error during the payment or session creation.
 ___
 
