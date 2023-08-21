@@ -9,7 +9,8 @@ import IMG from '../images/iphone.jpg';
 export const StripePayment = () => {
   const [product, setProduct] = useState([{
     name: 'iphone-13pro-max',
-    price: 23,
+    id: "price_1NZG7VCZYEjq9G2u5VogGRYM",
+    price: product.id,
     /*  productOwner: 'APPLE',
     description: 'THIS COMPANY OF ONE OF THE BEST DOCS', */
     quantity: 1,
