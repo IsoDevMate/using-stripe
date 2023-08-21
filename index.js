@@ -35,7 +35,7 @@ const productSchema = Joi.object({
 app.post('/checkout-session', async (req, res) => {
   const { product } = req.body;
 
-  // Validate product data
+  // Validate product data  I used the joi dev library from the frontend
   const { error } = productSchema.validate(product);
   if (error) {
     return res.status(400).json({ message: 'Invalid product data' });

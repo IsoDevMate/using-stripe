@@ -59,7 +59,18 @@ export const StripePayment = () => {
 
   return (
     <Card style={{ width: '18rem', backgroundColor: '#f0f0f0', color: '#333', margin: '1rem' }}>
-      <Card.Img variant="left" src={IMG} />
+     <Card.Img
+  variant="left"
+  src={IMG}
+  style={{
+    width: '80%',
+    marginTop: '1rem',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    display: 'block' // To center the image horizontally
+  }}
+/>
+
       <Card.Body>
         <Card.Title>{product.name}</Card.Title>
         <Card.Text>{product.description}</Card.Text>
